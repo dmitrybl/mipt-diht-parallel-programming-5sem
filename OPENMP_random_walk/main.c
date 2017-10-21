@@ -64,7 +64,7 @@ int main(int argc, const char * argv[]) {
     printf("Parallel: %fs\n", delta);
     printf("b: %lf\n", (double)rightPointsCount / N);
     printf("S: %lf\n", (double)totalTime / N);
-    printf("a: %d\n", rightPointsCount);
-    printf("b: %d\n", leftPointsCount);
+    printf("b: %d\n", rightPointsCount);
+    printf("a: %d\n", leftPointsCount);
     return 0;
 }

@@ -12,6 +12,10 @@
 #include <sys/time.h>
 #include <omp.h>
 
+int myrand(unsigned int* seed, double p) {
+    return rand_r(seed) < RAND_MAX * p;
+}
+
 int main(int argc, const char * argv[]) {
     int a = atoi(argv[1]);
     int b = atoi(argv[2]);
@@ -20,21 +24,18 @@ int main(int argc, const char * argv[]) {
     float p = atof(argv[5]);
     int P = atoi(argv[6]);
     
-    unsigned int seed = clock();
     int totalTime = 0;
     int rightPointsCount = 0;
     omp_set_num_threads(P);
     double start = omp_get_wtime();
     
-#pragma omp parallel
-    {
-#pragma omp for reduction(+: rightPointsCount, totalTime)
+#pragma omp parallel for reduction(+: rightPointsCount, totalTime)
         for(int i = 0; i < N; i++) {
             int current = x;
             int time = 0;
+            unsigned int seed = clock();
             while(current != a && current != b) {
-                int random = rand_r(&seed);
-                if(random < RAND_MAX * p) {
+                if(myrand(&seed, p)) {
                     current++;
                 }
                 else {
@@ -49,7 +50,6 @@ int main(int argc, const char * argv[]) {
             
             totalTime += time;
         }
-    }
     
     double finish = omp_get_wtime();
     double delta = finish - start;
@@ -59,6 +59,6 @@ int main(int argc, const char * argv[]) {
     fclose(file);
     printf("Parallel: %fs\n", delta);
     printf("b: %lf\n", (double)rightPointsCount / N);
-    printf("S: %lf\n", (double)totalTime / N);		
+    printf("S: %lf\n", (double)totalTime / N);
     return 0;
 }

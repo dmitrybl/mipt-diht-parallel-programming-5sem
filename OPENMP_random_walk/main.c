@@ -26,10 +26,11 @@ int main(int argc, const char * argv[]) {
     
     int totalTime = 0;
     int rightPointsCount = 0;
+    int leftPointsCount = 0;
     omp_set_num_threads(P);
     double start = omp_get_wtime();
     
-#pragma omp parallel for reduction(+: rightPointsCount, totalTime)
+#pragma omp parallel for schedule(static) reduction(+: rightPointsCount, leftPointsCount, totalTime)
         for(int i = 0; i < N; i++) {
             int current = x;
             int time = 0;
@@ -47,6 +48,9 @@ int main(int argc, const char * argv[]) {
             if(current == b) {
                 rightPointsCount++;
             }
+            else {
+                leftPointsCount++;
+            }
             
             totalTime += time;
         }
@@ -60,5 +64,7 @@ int main(int argc, const char * argv[]) {
     printf("Parallel: %fs\n", delta);
     printf("b: %lf\n", (double)rightPointsCount / N);
     printf("S: %lf\n", (double)totalTime / N);
+    printf("a: %d\n", rightPointsCount);
+    printf("b: %d\n", leftPointsCount);
     return 0;
 }

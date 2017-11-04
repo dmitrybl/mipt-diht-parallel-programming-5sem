@@ -70,7 +70,9 @@ void usual_merge(merge_struct* ctx) {
     }
     
     int length = ctx->l_size + ctx->r_size;
-    memcpy(ctx->array, ctx->T, length * sizeof(int));
+    if(ctx->T != ctx->array) {
+        memcpy(ctx->array, ctx->T, length * sizeof(int));
+    }
 }
 
 void usual_merge_sort(merge_sort_struct* ctx) {
@@ -251,7 +253,7 @@ int main(int argc, char** argv) {
     
     file = fopen("data.txt", "a");
     for(int i = 0; i < n; i++) {
-        fprintf(file, "%d ", A[i]);
+        fprintf(file, "%d ", array[i]);
     }
     fclose(file);
     file = fopen("stats.txt", "w");
